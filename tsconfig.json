@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "outDir": "./dist",
+    "strict": true,
+    "baseUrl": "./",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "paths": {
+      "@controllers/*": ["src/controllers/*"],
+      "@infra/*": ["src/infra/*"],
+      "@providers/*": ["src/providers/*"],
+      "@services/*": ["src/services/*"],
+      "@utils/*": ["src/utils/*"],
+      "@test/*": ["__test__/*"]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/@types"
+    ],
+    "lib": [
+      "ES6",
+      "ES2020.Promise"
+    ],
+    "rootDirs": [
+      "./src",
+      "./__test__"
+    ]
+  },
+  "include": [
+    "./src/**/*",
+    "./.credentials/**/*.json"
+  ],
+  "exclude": [
+    "./node_modules/*",
+    "./dist"
+  ]
+}
