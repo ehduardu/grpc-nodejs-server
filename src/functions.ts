@@ -1,6 +1,25 @@
-export const hello = (call: any, callback: any) => {
-  callback(null, { msg: 'Oi ' + call.request.name })
+import { Metadata, sendUnaryData, ServerUnaryCall, status } from '@grpc/grpc-js'
+
+export const sayHello = (call: ServerUnaryCall<any, any>, callback: sendUnaryData<any>) => {
+  callback(null, { message: 'Oi ' + call.request.name })
 };
+
+export const throwError = (call: ServerUnaryCall<any, any>, callback: sendUnaryData<any>) => {
+  const errorDetails = {
+    reason: 'Ta invalido po',
+    stack_trace: ['Trace 1', 'Trace 2'],
+  };
+
+  const metadata = new Metadata();
+  metadata.set('error-details', JSON.stringify(errorDetails));
+
+
+  callback({
+    code: status.INVALID_ARGUMENT,
+    message: 'Invalid argument',
+    metadata: metadata,
+  }, null);
+}
 
 export const sleep = (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms));

@@ -3,24 +3,29 @@ import express from "express";
 import { Server, ServerCredentials, loadPackageDefinition } from '@grpc/grpc-js';
 import { loadSync } from '@grpc/proto-loader';
 
-import { chat, hello, sleep } from './functions'
+import { chat, sayHello, sleep, throwError } from './functions'
 
-const PROTO_PATH = path.join(__dirname, '..', 'hello_message.proto');
+const PROTO_PATH = path.join(__dirname, '..', 'helloworld.proto');
 
-const proto = loadSync(PROTO_PATH);
-const definition = loadPackageDefinition(proto).HelloService;
+// Carrega o arquivo.proto
+const packageDefinition = loadSync(PROTO_PATH);
+const helloworldProto = loadPackageDefinition(packageDefinition);
 
+// Cria o servidor
 const serverURL = 'localhost:50051';
 const server = new Server();
 // @ts-ignore
-server.addService(definition.service, {
-  hello,
-  chat
+server.addService(helloworldProto.helloworld.Greeter.service, {
+  sayHello,
+  throwError,
+  // chat
 })
 
-server.bindAsync(serverURL, ServerCredentials.createInsecure(), () => {
-  server.start();
-  console.log(`gRPC server running on ${serverURL}`);
+server.bindAsync(serverURL, ServerCredentials.createInsecure(), (err, port) => {
+  if (err != null) {
+    return console.error(err);
+  }
+  console.log(`gRPC listening on ${port}`)
 });
 
 
@@ -28,19 +33,19 @@ server.bindAsync(serverURL, ServerCredentials.createInsecure(), () => {
 
 // express server ----------------------------
 
-const router = express.Router();
-const app = express();
+// const router = express.Router();
+// const app = express();
 
-router.post('/', async (req, res) => {
-  console.log('Ok');
-  await sleep(2 * 1000);
-  res.status(200).send({ msg: 'Deu certo' });
-});
+// router.post('/', async (req, res) => {
+//   console.log('Ok');
+//   await sleep(2 * 1000);
+//   res.status(200).send({ msg: 'Deu certo' });
+// });
 
 
-app
-  .use(router)
-  .listen(3003, () => {
-    console.log('Express server running on 3003');
-  });
+// app
+//   .use(router)
+//   .listen(3003, () => {
+//     console.log('Express server running on 3003');
+//   });
 
